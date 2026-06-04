@@ -12,7 +12,7 @@ def construir_prompt(ingredientes: List[Dict[str, str]]) -> str:
     )
     return (
         "Eres un chef profesional. Con los siguientes ingredientes disponibles, "
-        "genera una receta completa. Responde UNICAMENTE con un objeto JSON valido "
+        "genera una receta completa. Responde UNICAMENTE con un objeto JSON valido, Intenta cambiar las recetas siempre, no repitas receta aunque esten los mismos ingredientes."
         "sin texto adicional, con esta estructura exacta:\n"
         "{\n"
         '  "nombre_plato": "string",\n'

@@ -84,8 +84,8 @@ header {
 .btn-danger { background: var(--color-error); color: #fff; font-size: 0.8rem; padding: 0.4rem 0.9rem; }
 .btn-danger:hover { background: #7d1c2a; }
 
-.btn-warning { background: #e6a817; color: #fff; font-size: 0.8rem; padding: 0.4rem 0.9rem; }
-.btn-warning:hover { background: #c8920e; }
+.btn-warning { background: #e4e4e4; color: #061f30; font-size: 0.8rem; padding: 0.4rem 0.9rem; }
+.btn-warning:hover { background: #dadada; }
 
 .btn-sm { font-size: 0.8rem; padding: 0.4rem 0.9rem; }
 
