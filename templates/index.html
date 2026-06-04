@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generador de Recetas</title>
+    <link rel="icon" href="/static/libro-de-recetas.png" type="image/x-icon" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="loading-ring"></div>
+      <p class="loading-text">Generando receta con inteligencia artificial...</p>
+    </div>
+
+    <header>
+      <div class="logo">Recetas<span>IA</span></div>
+      <div id="nav-auth">
+        <span id="user-name" style="display: none"></span>
+        <button class="btn btn-outline" id="btn-show-login" onclick="showView('login')">Iniciar sesion</button>
+        <button class="btn btn-primary" id="btn-show-register" onclick="showView('register')">Registrarse</button>
+        <button class="btn btn-outline" id="btn-logout" style="display: none" onclick="logout()">Cerrar sesion</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="view active" id="view-home">
+        <div class="hero">
+          <h1>Convierte tu inventario<br />en una receta</h1>
+          <p>Registra los ingredientes que tienes en casa y obtiene recetas personalizadas generadas por inteligencia artificial.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" onclick="showView('register')">Comenzar ahora</button>
+            <button class="btn btn-secondary" onclick="showView('login')">Ya tengo cuenta</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="view-login">
+        <div class="card" style="max-width: 420px; margin: 2rem auto">
+          <h2>Iniciar sesion</h2>
+          <div id="login-alert"></div>
+          <div class="form-group">
+            <label>Correo electronico</label>
+            <input type="email" id="login-email" placeholder="correo@ejemplo.com" />
+          </div>
+          <div class="form-group">
+            <label>Contrasena</label>
+            <input type="password" id="login-password" placeholder="Tu contrasena" />
+          </div>
+          <button class="btn btn-primary" onclick="login()" id="btn-login">Ingresar</button>
+          <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--color-text-muted)">
+            No tienes cuenta?
+            <a href="#" onclick="showView('register')" style="color: var(--color-primary); font-weight: 600">Registrate</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="view" id="view-register">
+        <div class="card" style="max-width: 420px; margin: 2rem auto">
+          <h2>Crear cuenta</h2>
+          <div id="register-alert"></div>
+          <div class="form-group">
+            <label>Nombre completo</label>
+            <input type="text" id="reg-nombre" placeholder="Tu nombre" />
+          </div>
+          <div class="form-group">
+            <label>Correo electronico</label>
+            <input type="email" id="reg-email" placeholder="correo@ejemplo.com" />
+          </div>
+          <div class="form-group">
+            <label>Contrasena</label>
+            <input type="password" id="reg-password" placeholder="Minimo 6 caracteres" />
+          </div>
+          <button class="btn btn-primary" onclick="register()">Crear cuenta</button>
+          <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--color-text-muted)">
+            Ya tienes cuenta?
+            <a href="#" onclick="showView('login')" style="color: var(--color-primary); font-weight: 600">Inicia sesion</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="view" id="view-app">
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('inventario')">Inventario</div>
+          <div class="tab" onclick="switchTab('recetas')">Mis Recetas</div>
+        </div>
+
+        <div class="tab-content active" id="tab-inventario">
+          <div class="section-header">
+            <h2>Inventario de ingredientes</h2>
+            <button class="btn btn-primary btn-sm" onclick="toggleAddForm()">Agregar ingrediente</button>
+          </div>
+
+          <div class="card" id="add-form" style="display: none">
+            <h2>Nuevo ingrediente</h2>
+            <div id="ingr-alert"></div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="ingr-nombre" placeholder="Ej: Tomate" />
+              </div>
+              <div class="form-group">
+                <label>Cantidad</label>
+                <input type="text" id="ingr-cantidad" placeholder="Ej: 3" />
+              </div>
+            </div>
+            <div class="form-group" style="max-width: 200px">
+              <label>Unidad</label>
+              <select id="ingr-unidad">
+                <option value="unidades">Unidades</option>
+                <option value="gramos">Gramos</option>
+                <option value="kg">Kilogramos</option>
+                <option value="ml">Mililitros</option>
+                <option value="litros">Litros</option>
+                <option value="tazas">Tazas</option>
+                <option value="cucharadas">Cucharadas</option>
+                <option value="cucharaditas">Cucharaditas</option>
+              </select>
+            </div>
+            <div style="display: flex; gap: 0.75rem">
+              <button class="btn btn-primary btn-sm" onclick="addIngrediente()">Guardar</button>
+              <button class="btn btn-sm" style="background: var(--color-border); color: var(--color-text)" onclick="toggleAddForm()">Cancelar</button>
+            </div>
+          </div>
+
+          <div id="ingredientes-list"></div>
+
+          <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border)">
+            <button class="btn btn-secondary" onclick="generarReceta()" id="btn-generar">
+              Generar receta con mi inventario
+            </button>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-recetas">
+          <div class="section-header">
+            <h2>Recetas generadas</h2>
+            <span id="recetas-count" style="font-size: 0.875rem; color: var(--color-text-muted)"></span>
+          </div>
+          <div id="recetas-list"></div>
+        </div>
+      </div>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
